@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 function App() {
   const [jobDescription, setJobDescription] = useState("");
@@ -11,18 +11,20 @@ function App() {
     setResult("");
 
     try {
-      const res = await fetch("/api/tailor-cv", {
+      const response = await fetch("/api/tailor-cv", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           jobDescription,
           cvText,
         }),
       });
 
-      const data = await res.json();
-      setResult(data.result || "No result returned.");
-    } catch (err) {
+      const data = await response.json();
+      setResult(data.result || "No response returned from server.");
+    } catch (error) {
       setResult("Error contacting server.");
     }
 
@@ -30,11 +32,13 @@ function App() {
   }
 
   return (
-    <div style={{ maxWidth: 800, margin: "40px auto", fontFamily: "sans-serif" }}>
+    <div style={{ maxWidth: 800, margin: "40px auto", fontFamily: "Arial, sans-serif" }}>
       <h1>AI Job Application Assistant</h1>
 
+      <p>Paste a job description and your CV to get optimized suggestions.</p>
+
       <textarea
-        placeholder="Paste job description"
+        placeholder="Paste job description here"
         rows={6}
         style={{ width: "100%", marginTop: 10 }}
         value={jobDescription}
@@ -42,7 +46,7 @@ function App() {
       />
 
       <textarea
-        placeholder="Paste your CV"
+        placeholder="Paste your CV here"
         rows={6}
         style={{ width: "100%", marginTop: 10 }}
         value={cvText}
@@ -52,13 +56,21 @@ function App() {
       <button
         onClick={handleSubmit}
         disabled={loading}
-        style={{ marginTop: 10, padding: "10px 20px" }}
+        style={{ marginTop: 12, padding: "10px 20px", cursor: "pointer" }}
       >
         {loading ? "Analyzing..." : "Tailor CV"}
       </button>
 
       {result && (
-        <pre style={{ whiteSpace: "pre-wrap", marginTop: 20 }}>
+        <pre
+          style={{
+            whiteSpace: "pre-wrap",
+            marginTop: 20,
+            padding: 12,
+            background: "#f4f4f4",
+            borderRadius: 4,
+          }}
+        >
           {result}
         </pre>
       )}
